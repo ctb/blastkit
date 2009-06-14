@@ -9,6 +9,7 @@ import time
 import _mypath
 import blastkit
 import blastparser
+from pygr import seqdb
 
 import cgi
 
@@ -34,6 +35,7 @@ def do_cgi():
     
     # retrieve sequence from submitted form info
     form = cgi.FieldStorage()
+    name = form['name'].value
     sequence = form['sequence'].value
 
     # make a working directory to save stuff in
@@ -41,7 +43,7 @@ def do_cgi():
 
     # write out the query sequence
     fp = open('%s/query.fa' % (tempdir,), 'w')
-    fp.write('>query_seq\n%s\n' % (sequence,))
+    fp.write('>%s\n%s\n' % (name, sequence,))
     fp.close()
 
     # write out the placeholder message
@@ -71,7 +73,7 @@ def worker_fn(tempdir):
     """
     Run the BLAST and display the results.
     """
-    dbfile = '/Users/t/dev/blastkit/gapping.fa'
+    dbfile = '/Users/t/dev/blastkit/db/MA1W2.fa'
     newfile = tempdir + '/' + 'query.fa'
 
     out, err = blastkit.run_blast('blastn', newfile, dbfile)
@@ -92,7 +94,31 @@ def worker_fn(tempdir):
     fp.close()
 
     fp = open(tempdir + '/index.html', 'w')
-    fp.write('Done.  <a href="blast-out.txt">blast output</a>')
+    fp.write('BLAST complete. <p>')
+    fp.write('See <a href="blast-out.txt">blast output.</a>')
+    fp.write('<p>')
+
+    ###
+
+    db = seqdb.SequenceFileDB(dbfile)
+
+    for query in results:
+        for subject in query:
+            for hit in subject:
+                fp.write('Query: %s; subject: %s; hit, e_val: %s' % \
+                         (query.query_name,
+                          subject.subject_name,
+                          hit.expect))
+                fp.write('<br>')
+
+                seq = db[subject.subject_name]
+                seq = str(seq)
+
+                fp.write('sequence: %s' % (seq,))
+                fp.write('<p>')
+
+    ###
+
     fp.close()
 
 ###
