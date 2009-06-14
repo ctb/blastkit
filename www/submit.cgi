@@ -1,4 +1,4 @@
-#! /Users/t/dev/env/bin/python
+#! /u/t/dev/venv/bin/python
 import sys
 import shutil
 import cPickle
@@ -73,7 +73,7 @@ def worker_fn(tempdir):
     """
     Run the BLAST and display the results.
     """
-    dbfile = '/Users/t/dev/blastkit/db/MA1W2.fa'
+    dbfile = '/u/t/dev/blastkit/db/MA1W2.fa'
     newfile = tempdir + '/' + 'query.fa'
 
     out, err = blastkit.run_blast('blastn', newfile, dbfile)
