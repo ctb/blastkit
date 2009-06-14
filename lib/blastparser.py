@@ -69,9 +69,9 @@ class BlastSubjectSubmatch(object):
     (etc.)
      
     """
-    __slots__ = ['expect', 'frame1', 'frame2',
-                 'query_start', 'query_end', 'query_sequence',
-                 'subject_start', 'subject_end', 'subject_sequence', 'identity']
+#    __slots__ = ['expect', 'frame1', 'frame2',
+#                 'query_start', 'query_end', 'query_sequence',
+#                 'subject_start', 'subject_end', 'subject_sequence', 'identity']
     
     def __init__(self, expect, frame1, frame2,
                  q_start, q_end, q_seq, s_start, s_end, s_seq, identity):
@@ -108,7 +108,7 @@ class BlastSubjectHits(object):
         for match in hits_object:
            print match
     """
-    __slots__ = ['subject_name', 'matches' ]
+#    __slots__ = ['subject_name', 'matches' ]
     def __init__(self, subject_name, matches):
         self.subject_name = str(subject_name)
         self.matches = matches
@@ -138,7 +138,7 @@ class BlastQuery(object):
         for hits_object in query_object:
            print hits_object.subject_name
     """
-    __slots__ = ['query_name', 'hits' ]
+#    __slots__ = ['query_name', 'hits' ]
     def __init__(self, query_name, hits):
         self.query_name = query_name
         self.hits = list(hits)
