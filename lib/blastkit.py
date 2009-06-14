@@ -1,11 +1,17 @@
+"""
+Tools for running BLAST and managing results thru CGI scripts.
+"""
+
 import sys
 import os
 import subprocess
 import tempfile
 import traceback
 
-BLAST = '/usr/local/bin/blastall'
-tempdir = '/Users/t/dev/blastkit/www/files'
+###
+
+BLAST = None                            # define in blastkit_config
+tempdir = None
 
 ###
 
@@ -66,3 +72,26 @@ def make_dir():
     dir = tempfile.mkdtemp('', 'blast.', tempdir)
     dirstub = dir[len(tempdir) + 1:]
     return dir, dirstub
+
+def write_tracebacks_to_file(f):
+    """
+    Wrap the given function to write tracebacks to the file 'err.txt'
+    in the directory specified as the first argument.
+    """
+    def new_fn(*args, **kw):
+        try:
+            f(*args, **kw)
+        except SystemExit:
+            pass
+        except:
+            try:
+                filename = args[0] + '/err.txt'
+                fp = open(filename, 'w')
+                try:
+                    fp.write(traceback.format_exc())
+                finally:
+                    fp.close()
+            except:
+                pass
+
+    return new_fn
