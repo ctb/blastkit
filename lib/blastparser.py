@@ -322,8 +322,7 @@ if __name__ == '__main__':
 
     ### go!
 
-    for n, record in enumerate(parse_fp(blast_fp,
-                                        ignore_no_hits=options.ignore_empty_hits)):
+    for n, record in enumerate(parse_fp(blast_fp)):
         if n % 100 == 0:
             print '...', n
 
