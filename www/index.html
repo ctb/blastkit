@@ -1,7 +1,53 @@
-<form method='POST' action='submit.cgi'>
-Sequence name: <input type='text' name='name'><p>
+<form method='POST' action='submit_test.cgi' enctype='multipart/form-data'>
+Query name: <input type='text' name='name'><p>
+
 Sequence:<br>
 <textarea name='sequence'></textarea>
+<p>
+<p>
+
+<p>     Upload a file
+
+<p><p class="nomargin"><input type="file" name="filename">
+ <p>Select a database to query
+<select name="blastdb">
+  <option value="MA1W2">MA1W2 (Ag 1)</option>
+  <option value="MA1W4">MA1W4 (Ag 2)</option>
+  <option value="MB3W1">MB3W1 (For 1)</option>
+  <option value="MB3W3">MB3W3 (For 2)</option>
+  <option value="nirk">nirK database</option>
+  <option value="nirk_cultured">nirK cultured database</option>
+  </select>
+<p>
+
+<p>Select a blast program to use - <i>tblastx</i> is the default, and probably the best to use
+<br>
+<select name="blastprogram">
+  <option value="tblastx"><b>tblastx</b></option>
+  <option value="blastn"><b>blastn</b></option>
+  <option value="blastx"><b>blastx</b></option> 
+
+  </option>
+  </select>
+<p>
+Select an e-value cutoff to use --   <i>0.1</i> is the default
+<br>
+<select name="e_value">
+    <option value="0.1"><b>0.1</b></option>
+    <option value="0.01"><b>0.01</b></option>
+    <option value="1e-5"><b>1e-5</b></option>
+    <option value="1e-10"><b>1e-10</b></option>
+    <option value="1e-20"><b>1e-20</b></option>
+    <option value="1e-50"><b>1e-50</b></option>
+    <option value="1e-100"><b>1e-100</b></option>
+</select>
+<p>
+<p>
+Blast programs: <br>
+blastn - Search a nucleotide database using a nucleotide query
+<br>blastx - Search protein database using a translated nucleotide query
+<br>tblastx - Search translated nucleotide database using a translated nucleotide query
+
 <p>
 <input type='submit' value='BLAST'>
 </form>
