@@ -1,3 +1,5 @@
+these are many changes that I decide I like and will force on Qingpeng
+
 Requirements:
 
  - Python 2.x, x >= 5.
