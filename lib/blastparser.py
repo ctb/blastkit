@@ -10,21 +10,16 @@ Goals:
 
 Sample usage: ::
 
-   for record in parse_file('blast_output.txt'):
-      print '-', record.query_name, record.database.name
-      for hit in record.hits:
-         print '--', hit.subject_name, hit.subject_length
-         print '  ', hit.total_score, hit.total_expect
-         for submatch in hit:
-            print submatch.expect, submatch.bits
-            
-            print submatch.query_sequence
-            print submatch.alignment
-            print submatch.subject_sequence
-
-Here, 'submatch' is a BlastObjectSubmatch; 'hit' is a BlastSubjectHits;
-'record' is a BlastQuery; and 'record.database' is a BlastDatabase.  See
-the docstrings below for attributes available on these objects.
+for record in blastparser.parse_fp(open('blastp.out')):
+    print record, record.query_name
+    for hit in record.hits:
+        print 'HIT:', hit.subject_name
+        for match in hit.matches:
+            print 'M:', match.expect
+            print 'M:', match.query_start, match.query_end
+            print 'M:', match.query_sequence
+            print 'M:', match.subject_start, match.subject_end
+            print 'M:', match.subject_sequence
 
 Author: C. Titus Brown <titus@caltech.edu>
 """
@@ -76,6 +71,7 @@ class BlastSubjectSubmatch(object):
     def __init__(self, expect, frame1, frame2,
                  q_start, q_end, q_seq, s_start, s_end, s_seq, identity):
         self.expect = math.pow(10, -expect)
+#        print self.expect, expect
         self.frame1 = frame1
         self.frame2 = frame2
         self.query_start = q_start
@@ -247,14 +243,6 @@ class BlastParser(object):
         cur_subject = None
         
         for query_id, subject_id, submatch in self.p.parse_file(fp):
-            if cur_query != query_id:
-                if cur_query:
-                    query_hits = BlastQuery(cur_query, subjects)
-                    queries.append(query_hits)
-                    subjects = []
-
-                cur_query = query_id
-            
             if cur_subject != subject_id:
                 if cur_subject:
                     subject_hits = BlastSubjectHits(cur_subject, matches)
@@ -263,15 +251,22 @@ class BlastParser(object):
 
                 cur_subject = subject_id
                 
+            if cur_query != query_id:
+                if cur_query:
+                    query_hits = BlastQuery(cur_query, subjects)
+                    yield query_hits
+                    
+                    subjects = []
+
+                cur_query = query_id
+            
             matches.append(submatch)
 
         if matches:
             subjects.append(BlastSubjectHits(cur_subject, matches))
             
         if subjects:
-            queries.append(BlastQuery(cur_query, subjects))
-
-        return queries
+            yield BlastQuery(cur_query, subjects)
 
 def build_short_sequence_name(name, max_len=20):
     if len(name) < max_len:

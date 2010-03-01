@@ -74,9 +74,10 @@ class BlastHitParser(object):
         s=line.split()[7]
         if s[0]=='e':
             s='1'+s
+        if s.endswith(','): s = s.strip(',')
         try:
             self.e_value= -math.log(float(s))/math.log(10.0)
-        except (ValueError,OverflowError):
+        except (ValueError,OverflowError), e:
             self.e_value=300.
     def save_identity(self,line):
         "save Identities line"
