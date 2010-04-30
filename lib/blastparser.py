@@ -10,16 +10,21 @@ Goals:
 
 Sample usage: ::
 
-for record in blastparser.parse_fp(open('blastp.out')):
-    print record, record.query_name
-    for hit in record.hits:
-        print 'HIT:', hit.subject_name
-        for match in hit.matches:
-            print 'M:', match.expect
-            print 'M:', match.query_start, match.query_end
-            print 'M:', match.query_sequence
-            print 'M:', match.subject_start, match.subject_end
-            print 'M:', match.subject_sequence
+   for record in parse_file('blast_output.txt'):
+      print '-', record.query_name, record.database.name
+      for hit in record.hits:
+         print '--', hit.subject_name, hit.subject_length
+         print '  ', hit.total_score, hit.total_expect
+         for submatch in hit:
+            print submatch.expect, submatch.bits
+            
+            print submatch.query_sequence
+            print submatch.alignment
+            print submatch.subject_sequence
+
+Here, 'submatch' is a BlastObjectSubmatch; 'hit' is a BlastSubjectHits;
+'record' is a BlastQuery; and 'record.database' is a BlastDatabase.  See
+the docstrings below for attributes available on these objects.
 
 Author: C. Titus Brown <titus@caltech.edu>
 """
@@ -48,8 +53,7 @@ class BlastSubjectSubmatch(object):
      - expect
      - frame1
      - frame2
-     - bits
-     - bits_max
+     - score
      - query_start
      - query_end
      - subject_start
@@ -69,9 +73,8 @@ class BlastSubjectSubmatch(object):
 #                 'subject_start', 'subject_end', 'subject_sequence', 'identity']
     
     def __init__(self, expect, frame1, frame2,
-                 q_start, q_end, q_seq, s_start, s_end, s_seq, identity):
+                 q_start, q_end, q_seq, s_start, s_end, s_seq, identity, score):
         self.expect = math.pow(10, -expect)
-#        print self.expect, expect
         self.frame1 = frame1
         self.frame2 = frame2
         self.query_start = q_start
@@ -81,6 +84,7 @@ class BlastSubjectSubmatch(object):
         self.subject_start = s_start
         self.subject_end = s_end
         self.subject_sequence = s_seq
+        self.score = score
 
     def __repr__(self):
         return "<BlastSubjectSubmatch(expect=%g, query %d-%d, subject %d-%d))>"\
@@ -211,7 +215,8 @@ class _PygrBlastHitParser(parse_blast.BlastHitParser):
                                    self.subject_start,
                                    self.subject_end,
                                    self.subject_seq,
-                                   self.identity_percent)
+                                   self.identity_percent,
+                                   self.blast_score)
     
 class BlastParser(object):
     """
@@ -233,9 +238,13 @@ class BlastParser(object):
     def __init__(self):
         self.p = _PygrBlastHitParser()
 
+    def parse_file(self, filename):
+        fp = open(filename)
+        for record in self.parse_fp(fp):
+            yield record
+
     def parse_fp(self, fp):
 
-        queries = []
         subjects = []
         matches = []
 
@@ -243,8 +252,9 @@ class BlastParser(object):
         cur_subject = None
         
         for query_id, subject_id, submatch in self.p.parse_file(fp):
-            if cur_subject != subject_id:
-                if cur_subject:
+            if cur_subject != subject_id or cur_query != query_id:
+                if matches:
+                    assert cur_subject
                     subject_hits = BlastSubjectHits(cur_subject, matches)
                     subjects.append(subject_hits)
                     matches = []
@@ -253,13 +263,12 @@ class BlastParser(object):
                 
             if cur_query != query_id:
                 if cur_query:
-                    query_hits = BlastQuery(cur_query, subjects)
-                    yield query_hits
-                    
+                    assert subjects, cur_query
+                    yield BlastQuery(cur_query, subjects)
                     subjects = []
 
                 cur_query = query_id
-            
+
             matches.append(submatch)
 
         if matches:
@@ -267,6 +276,7 @@ class BlastParser(object):
             
         if subjects:
             yield BlastQuery(cur_query, subjects)
+
 
 def build_short_sequence_name(name, max_len=20):
     if len(name) < max_len:
