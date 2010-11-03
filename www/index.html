@@ -6,6 +6,28 @@ html1/DTD/xhtml1-strict.dtd">
 <head>
 <title>Lamprey SuperBlastGeneSearch</title>
 <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+<script type="text/javascript" src="jquery-1.4.3.min.js"></script>
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+
+  $("#dnaEx").click(function(event) { 
+     $("#name").val("pmfoxA ");
+     $("#sequence").val("ATGATGACCCTCAACGAGATCTACTCGTGGATCATGGACCTCTTCCCCTTCTACCGGCAGAACCAGCAGCGCTGGCAGAACTCCATCCGCCACTCGCTCTCCTTCAACGACTGCTTCGTCAAGGTGCCGCGCTCGCCCGACAAGCCGGGCAAGGGCTCCTTCTGGGCGCTCCACCCGGACTCGGGGAACATGTTCGAGAACGGCTGCTACCTGCGGCGGCAGAAGCGCTTCAAGTGCGACAGGAAGCAGAAGA");
+     event.preventDefault();
+  });
+
+  $("#protEx").click(function(event) { 
+     $("#name").val("MmEngrailed");
+     $("#sequence").val("MEEQQPEPKSQRDSGLGAVAAAAPSGLSLSLSPGASGSSGSDGDSVPVSPQPAPPSPPAAPCLPPLAHHPHLPPHPPPPPPPPPPPPQHLAAPAHQPQPAAQLHRTTNFFIDNILRPDFGCKKEQPLPQLLVASAAAGGGAAAGGGSRVERDRGQTGAGRDPVHSLGTRASGAASLLCAPDANCGPPDGSQPATAVGAGASKAGNPAAAAAAAAAAAAAAVAAAAAAASKPSDSGGGSGGNAGSPGAQGAKFPEHNPAILLMGSANGGPVVKTDSQQPLVWPAWVYCTRYSDRPSSGPRTRKLKKKKNEKEDKRPRTAFTAEQLQRLKAEFQANRYITEQRRQTLAQELSLNESQIKIWFQNKRAKIKKATGIKNGLALHLMAQGLYNHSTTTVQDKDESE");
+     event.preventDefault();
+  });
+
+ });
+      
+</script>
+
 </head>
 <body>
 <div id="header">
@@ -22,6 +44,17 @@ html1/DTD/xhtml1-strict.dtd">
 </div>
 
 <div id="content">
+<div id="right">
+<h2>Examples</h2>
+<p>
+Try out the following examples:
+<p>
+<a href='#' id='protEx'>Example protein sequence (Mm engrailed)</a>
+<p>
+<a href='#' id='dnaEx'>Example DNA sequence (Pm foxA)</a>
+</div>
+
+<div id="left">
 
 <h2>Enter a sequence below!</h2>
 <p>
@@ -35,9 +68,9 @@ The submitted sequence will be searched simultaneously against:
 
 <form method='POST' action='submit.cgi'>
 <p>
-Sequence name: <input type='text' name='name' value='query'><p>
+Sequence name: <input type='text' name='name' value='query' id='name'><p>
 Sequence:<br>
-<textarea name='sequence' rows='10' cols='60'></textarea>
+<textarea name='sequence' rows='10' cols='60' id='sequence'></textarea>
 <p>
 Input sequence type: <select name='input'>
 <option value='protein'> protein
@@ -49,5 +82,7 @@ Input sequence type: <select name='input'>
 </form>
 
 </div>
+</div>
+
 </body>
 </html>

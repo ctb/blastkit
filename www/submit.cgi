@@ -18,10 +18,12 @@ import cgi
 PLACEHOLDER_MESSAGE = '''
 <head><META http-equiv="refresh" content="5;"></head>
 <body>
+We're doing the BLAST!
+<p>
+<b>Don't hit reload!</b>
 This page will automatically reload, and the results will be available here.
 <p>
-If you get a blank page, hit Reload on your browser.
-Results for large datasets can take up to 20 minutes to be returned ...
+Results can take a few minutes.
 </body>
 '''
 

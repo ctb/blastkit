@@ -16,7 +16,7 @@ ul#nav a{float:left;width: 95px;padding: 5px 0;background: #E7F1F8;text-decorati
 ul#nav a:hover{background: #fff;color: #000}
 ul#nav li.activelink a,ul#nav li.activelink a:hover{background: #FFF;color: #003}
 
-#right {
+#left {
 	float: left;
 	width: 76%;
 	padding: 1em;
@@ -25,14 +25,14 @@ ul#nav li.activelink a,ul#nav li.activelink a:hover{background: #FFF;color: #003
 	text-align: justify;
 }
 
-#left {
+#right {
 	float: right;
 	width: 20%;
 	margin: 0 0 10px 0;
 	
 }
 
-#left .box {
+#right .box {
 	
 	padding: 1em;
 	margin: 0 0 1em 0;
