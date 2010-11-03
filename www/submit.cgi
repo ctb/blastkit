@@ -49,7 +49,10 @@ def do_cgi():
 
     # write out the query sequence
     fp = open('%s/query.fa' % (tempdir,), 'w')
-    fp.write('>%s\n%s\n' % (name, sequence,))
+    if sequence.strip().startswith('>'):
+        fp.write(sequence)
+    else:
+        fp.write('>%s\n%s\n' % (name, sequence,))
     fp.close()
 
     # write out the placeholder message
