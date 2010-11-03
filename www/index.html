@@ -15,12 +15,14 @@ $(document).ready(function(){
   $("#dnaEx").click(function(event) { 
      $("#name").val("pmfoxA ");
      $("#sequence").val("ATGATGACCCTCAACGAGATCTACTCGTGGATCATGGACCTCTTCCCCTTCTACCGGCAGAACCAGCAGCGCTGGCAGAACTCCATCCGCCACTCGCTCTCCTTCAACGACTGCTTCGTCAAGGTGCCGCGCTCGCCCGACAAGCCGGGCAAGGGCTCCTTCTGGGCGCTCCACCCGGACTCGGGGAACATGTTCGAGAACGGCTGCTACCTGCGGCGGCAGAAGCGCTTCAAGTGCGACAGGAAGCAGAAGA");
+     $("#seqtype").val("DNA");
      event.preventDefault();
   });
 
   $("#protEx").click(function(event) { 
      $("#name").val("MmEngrailed");
      $("#sequence").val("MEEQQPEPKSQRDSGLGAVAAAAPSGLSLSLSPGASGSSGSDGDSVPVSPQPAPPSPPAAPCLPPLAHHPHLPPHPPPPPPPPPPPPQHLAAPAHQPQPAAQLHRTTNFFIDNILRPDFGCKKEQPLPQLLVASAAAGGGAAAGGGSRVERDRGQTGAGRDPVHSLGTRASGAASLLCAPDANCGPPDGSQPATAVGAGASKAGNPAAAAAAAAAAAAAAVAAAAAAASKPSDSGGGSGGNAGSPGAQGAKFPEHNPAILLMGSANGGPVVKTDSQQPLVWPAWVYCTRYSDRPSSGPRTRKLKKKKNEKEDKRPRTAFTAEQLQRLKAEFQANRYITEQRRQTLAQELSLNESQIKIWFQNKRAKIKKATGIKNGLALHLMAQGLYNHSTTTVQDKDESE");
+     $("#seqtype").val("protein");
      event.preventDefault();
   });
 
@@ -49,9 +51,9 @@ $(document).ready(function(){
 <p>
 Try out the following examples:
 <p>
-<a href='#' id='protEx'>Example protein sequence (Mm engrailed)</a>
+<a href='' id='protEx'>Example protein sequence (Mm engrailed)</a>
 <p>
-<a href='#' id='dnaEx'>Example DNA sequence (Pm foxA)</a>
+<a href='' id='dnaEx'>Example DNA sequence (Pm foxA)</a>
 </div>
 
 <div id="left">
@@ -72,7 +74,7 @@ Sequence name: <input type='text' name='name' value='query' id='name'><p>
 Sequence:<br>
 <textarea name='sequence' rows='10' cols='60' id='sequence'></textarea>
 <p>
-Input sequence type: <select name='input'>
+Input sequence type: <select name='input' id='seqtype'>
 <option value='protein'> protein
 <option value='DNA'> DNA
 </select>
