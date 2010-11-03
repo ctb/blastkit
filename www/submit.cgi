@@ -36,6 +36,10 @@ def do_cgi():
     # retrieve sequence from submitted form info
     form = cgi.FieldStorage()
     name = form['name'].value
+    if not name.strip():
+        name = 'query'
+
+    seqtype = form['input'].value
     sequence = form['sequence'].value
 
     # make a working directory to save stuff in
@@ -52,7 +56,8 @@ def do_cgi():
     fp.close()
 
     # fork response function / worker function
-    blastkit.split_execution(response_fn, (dirstub,), worker_fn, (tempdir,))
+    blastkit.split_execution(response_fn, (dirstub,),
+                             worker_fn, (seqtype, tempdir,))
 
 def response_fn(dirstub):
     """
@@ -69,38 +74,86 @@ def response_fn(dirstub):
     print 'Location: %s\n' % (url,)
 
 @blastkit.write_tracebacks_to_file
-def worker_fn(tempdir):
+def worker_fn(seqtype, tempdir):
     """
     Run the BLAST and display the results.
     """
-    dbfile = '/u/t/dev/blastkit/db/MA1W2.fa'
+    dbfile = '/scratch/titus/mssm/pm-abund.k31.200.num.fa'
     newfile = tempdir + '/' + 'query.fa'
 
-    out, err = blastkit.run_blast('blastn', newfile, dbfile)
+    if seqtype == 'protein':
+        program = 'tblastn'
+    else:
+        program = 'blastn'
+        
+    out, err = blastkit.run_blast(program, newfile, dbfile, args=['-e 1e-6'])
 
-    fp = open(tempdir + '/blast-out.txt', 'w')
+    fp = open(tempdir + '/blast1-out.txt', 'w')
     fp.write(out)
     fp.close()
 
     if err and err.strip():
-        fp = open(tempdir + '/blast-err.txt', 'w')
+        fp = open(tempdir + '/blast1-err.txt', 'w')
         fp.write(err)
         fp.close()
 
     results = list(blastparser.parse_string(out))
 
-    fp = open(tempdir + '/blast-results.pickle', 'w')
-    cPickle.dump(results, fp)
+    dbfile = '/scratch/titus/mssm/genome.masked.fasta'
+    newfile = tempdir + '/' + 'query.fa'
+
+    if seqtype == 'protein':
+        program = 'tblastn'
+    else:
+        program = 'blastn'
+        
+    out, err = blastkit.run_blast(program, newfile, dbfile, args=['-e 1e-6'])
+
+    fp = open(tempdir + '/blast2-out.txt', 'w')
+    fp.write(out)
     fp.close()
+
+    if err and err.strip():
+        fp = open(tempdir + '/blast2-err.txt', 'w')
+        fp.write(err)
+        fp.close()
+
+    results = list(blastparser.parse_string(out))
+
+    dbfile = '/scratch/titus/mssm/maker-genes.fa'
+    newfile = tempdir + '/' + 'query.fa'
+
+    if seqtype == 'protein':
+        program = 'tblastn'
+    else:
+        program = 'blastn'
+        
+    out, err = blastkit.run_blast(program, newfile, dbfile, args=['-e 1e-6'])
+    
+    fp = open(tempdir + '/blast3-out.txt', 'w')
+    fp.write(out)
+    fp.close()
+
+    if err and err.strip():
+        fp = open(tempdir + '/blast3-err.txt', 'w')
+        fp.write(err)
+        fp.close()
+
+    results = list(blastparser.parse_string(out))
 
     fp = open(tempdir + '/index.html', 'w')
     fp.write('BLAST complete. <p>')
-    fp.write('See <a href="blast-out.txt">blast output.</a>')
+    fp.write('See <a href="blast1-out.txt">mRNAseq blast output.</a><p>')
+    fp.write('See <a href="blast2-out.txt">genome blast output.</a><p>')
+    fp.write('See <a href="blast3-out.txt">predicted genes blast output.</a><p>')
     fp.write('<p>')
 
     ###
 
-    db = seqdb.SequenceFileDB(dbfile)
+    fp.close()
+    return
+
+    #db = seqdb.SequenceFileDB(dbfile)
 
     for query in results:
         for subject in query:
@@ -111,6 +164,8 @@ def worker_fn(tempdir):
                           hit.expect))
                 fp.write('<br>')
 
+                continue
+                # @CTB
                 seq = db[subject.subject_name]
                 seq = str(seq)
 

@@ -1,7 +1,53 @@
-<form method='POST' action='submit.cgi'>
-Sequence name: <input type='text' name='name'><p>
-Sequence:<br>
-<textarea name='sequence'></textarea>
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/x
+html1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Lamprey SuperBlastGeneSearch</title>
+<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+</head>
+<body>
+<div id="header">
+<h1>Lamprey SuperBlastGeneSearch</h1>
+<!-- <div id="menu">
+  <ul id="nav">
+   <li><a href="#">Home</a></li>
+   <li><a href="#">About Me</a></li>
+   <li><a href="#">Archives</a></li>
+   <li><a href="#">Sitemap</a></li>
+  </ul>
+ </div>
+-->
+</div>
+
+<div id="content">
+
+<h2>Enter a sequence below!</h2>
 <p>
-<input type='submit' value='BLAST'>
+
+The submitted sequence will be searched simultaneously against:
+<ol>
+<li> - Predicted transcripts
+<li> - Assembled mRNAseq data
+<li> - Genomic (repeat-masked) sequence
+</ol>
+
+<form method='POST' action='submit.cgi'>
+<p>
+Sequence name: <input type='text' name='name' value='query'><p>
+Sequence:<br>
+<textarea name='sequence' rows='10' cols='60'></textarea>
+<p>
+Input sequence type: <select name='input'>
+<option value='protein'> protein
+<option value='DNA'> DNA
+</select>
+<p>
+<input type='submit' value='Do BLAST'>
+
 </form>
+
+</div>
+</body>
+</html>
