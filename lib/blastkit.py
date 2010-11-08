@@ -92,6 +92,7 @@ def write_tracebacks_to_file(f):
                 finally:
                     fp.close()
             except:
-                pass
+                raise
+                #pass
 
     return new_fn
