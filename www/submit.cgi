@@ -1,4 +1,4 @@
-#! /u/t/dev/venv/bin/python
+#! /home/t/blastkit/bk.lamprey/env/bin/python
 import sys
 import shutil
 import cPickle
@@ -73,10 +73,10 @@ def worker_fn(tempdir):
     """
     Run the BLAST and display the results.
     """
-    dbfile = '/u/t/dev/blastkit/db/MA1W2.fa'
+    dbfile = '/home/t/blastkit/bk.lamprey/db/petMar_lamp3.fasta'
     newfile = tempdir + '/' + 'query.fa'
 
-    out, err = blastkit.run_blast('blastn', newfile, dbfile)
+    out, err = blastkit.run_blast('tblastn', newfile, dbfile)
 
     fp = open(tempdir + '/blast-out.txt', 'w')
     fp.write(out)
@@ -97,6 +97,7 @@ def worker_fn(tempdir):
     fp.write('BLAST complete. <p>')
     fp.write('See <a href="blast-out.txt">blast output.</a>')
     fp.write('<p>')
+    fp.write('Here is a brief list of the matches together with the matched DNA sequences.<p>')
 
     ###
 
