@@ -28,7 +28,7 @@ def run_blast(program, sequence_filename, database_name, *args):
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
     except OSError:
-        return '', traceback.format_exc()
+        return " ".join(cmd), '', traceback.format_exc()
     
     (stdout, stderr) = p.communicate()
 
