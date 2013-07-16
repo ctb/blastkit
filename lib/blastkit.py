@@ -15,7 +15,7 @@ tempdir = None
 
 ###
 
-def run_blast(program, sequence_filename, database_name, args=[]):
+def run_blast(program, sequence_filename, database_name, *args):
     """
     Run BLAST.
     """
@@ -32,7 +32,7 @@ def run_blast(program, sequence_filename, database_name, args=[]):
     
     (stdout, stderr) = p.communicate()
 
-    return stdout, stderr
+    return " ".join(cmd), stdout, stderr
 
 def detach():
     """
@@ -54,7 +54,8 @@ def detach():
 
     return x
 
-def split_execution(parent_fn, parent_fn_args, child_fn, child_fn_args):
+def split_execution(parent_fn, parent_fn_args, child_fn, child_fn_args,
+                    child_fn_dictargs):
     """
     Fork, and run parent_fn in the parent process; in the child process,
     detach from the controlling terminal and *then* run the child fn.
@@ -62,7 +63,7 @@ def split_execution(parent_fn, parent_fn_args, child_fn, child_fn_args):
     if detach() != 0:
         parent_fn(*parent_fn_args)
     else:
-        child_fn(*child_fn_args)
+        child_fn(*child_fn_args, **child_fn_dictargs)
     sys.exit(0)
 
 def make_dir():

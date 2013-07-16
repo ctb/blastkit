@@ -8,6 +8,7 @@ import time
 
 import _mypath
 import blastkit
+import blastkit_config
 import blastparser
 from pygr import seqdb
 
@@ -37,13 +38,37 @@ def do_cgi():
     form = cgi.FieldStorage()
     name = form['name'].value
     sequence = form['sequence'].value
+    database = form['db'].value
+    program = form['program'].value
+    cutoff = form['cutoff'].value
+
+    dbinfo = blastkit_config.databases[0]
+    for _dbi in blastkit_config.databases:
+        if _dbi['id'] == database:
+            dbinfo = _dbi
+
+    if program not in ('auto', 'blastn', 'blastp', 'blastx', 'tblastn',
+                       'tblastx'):
+        program = 'auto'
+
+    try:
+        cutoff = float(cutoff)
+    except TypeError:
+        cutoff = 1e-3
 
     # make a working directory to save stuff in
     tempdir, dirstub = blastkit.make_dir()
 
     # write out the query sequence
+    sequence = sequence.strip()
+
     fp = open('%s/query.fa' % (tempdir,), 'w')
-    fp.write('>%s\n%s\n' % (name, sequence,))
+    if sequence.startswith('>'):
+        pass
+    else:
+        fp.write('>%s\n' % name)
+
+    fp.write('%s\n' % (sequence,))
     fp.close()
 
     # write out the placeholder message
@@ -52,7 +77,9 @@ def do_cgi():
     fp.close()
 
     # fork response function / worker function
-    blastkit.split_execution(response_fn, (dirstub,), worker_fn, (tempdir,))
+    blastkit.split_execution(response_fn, (dirstub,), worker_fn,
+                             (tempdir, dbinfo),
+                             dict(program=program, cutoff=cutoff))
 
 def response_fn(dirstub):
     """
@@ -69,14 +96,45 @@ def response_fn(dirstub):
     print 'Location: %s\n' % (url,)
 
 @blastkit.write_tracebacks_to_file
-def worker_fn(tempdir):
+def worker_fn(tempdir, dbinfo, program='auto', cutoff=1e-3):
     """
     Run the BLAST and display the results.
     """
-    dbfile = '/home/t/blastkit/bk.lamprey/db/petMar_lamp3.fasta'
+    
+    dbfile = dbinfo['filename']
     newfile = tempdir + '/' + 'query.fa'
 
-    out, err = blastkit.run_blast('tblastn', newfile, dbfile)
+    print 'using DB:', dbfile
+
+    orig_program = program
+    data = open(newfile).readlines()[1:]
+    data = "".join(data)
+    data = data.strip().lower()
+    dna = data.count('a') + data.count('t') + data.count('g') + data.count('c')
+    if dna / float(len(data)) > 0.75:
+        query_type = 'dna'
+    else:
+        query_type = 'protein'
+
+    if dbinfo['seqtype'].lower() == 'dna':
+        if query_type == 'dna':
+            program = 'blastn'
+        else:
+            program = 'tblastn'
+    else:
+        if query_type == 'dna':
+            program = 'blastx'
+        else:
+            program = 'blastp'
+
+    print 'using program:', program, orig_program
+
+    cmd, out, err = blastkit.run_blast(program, newfile, dbfile,
+                                  '-e', '%g' % cutoff)
+
+    fp = open(tempdir + '/blast-cmd.txt', 'w')
+    fp.write(cmd)
+    fp.close()
 
     fp = open(tempdir + '/blast-out.txt', 'w')
     fp.write(out)

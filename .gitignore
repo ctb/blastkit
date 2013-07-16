@@ -5,3 +5,12 @@
 *.nsd
 *.nsi
 *.nsq
+*.phr
+*.pin
+*.pnd
+*.pni
+*.psd
+*.psi
+*.psq
+*.seqlen
+*.pureseq
