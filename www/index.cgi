@@ -17,7 +17,7 @@ for db in blastkit_config.databases:
 html = "Database: <select name='db'>%s</select>" % "\n".join(dblist)
 
 print '''\
-<h1>Lamprey BLAST</h1>
+<h1>BLAST</h1>
 
 <p>
 
