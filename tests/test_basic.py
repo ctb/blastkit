@@ -16,6 +16,17 @@ def test_blast():
     assert 'comp0_c0_seq1 len=291' in out
     assert not err
 
+def test_blast_fail():
+    save_BLAST, blastkit.BLAST = blastkit.BLAST, "_fail_"
+    try:
+        x = blastkit.run_blast('blastn', db_path('query-dna.fa'),
+                               db_path('test-dna.fa'),)
+        cmd, out, err = x
+        assert not out
+        assert 'Traceback' in err
+    finally:
+        blastkit.BLAST = save_BLAST
+
 rfn_was_called = False
 wfn_was_called = False
 def test_split_blast():
