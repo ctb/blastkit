@@ -6,7 +6,7 @@ import screed
 filename = sys.argv[1]
 
 try:
-    os.unlink(filename + '_screed'
+    os.unlink(filename + '_screed')
 except OSError:
     pass
 
