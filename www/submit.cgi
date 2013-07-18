@@ -1,4 +1,7 @@
 #! /home/t/blastkit/bk.lamprey/env/bin/python
+import cgitb
+cgitb.enable()
+
 import sys
 import shutil
 import cPickle
