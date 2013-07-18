@@ -1,4 +1,4 @@
-#! /home/t/blastkit/bk.lamprey/env/bin/python
+#! /home/t/blastkit/bk.dev/env/bin/python
 import cgitb
 cgitb.enable()
 
@@ -8,6 +8,7 @@ import cPickle
 import traceback
 import os, os.path
 import time
+import jinja2
 
 import _mypath
 import blastkit
@@ -19,15 +20,12 @@ import cgi
 
 ###
 
-PLACEHOLDER_MESSAGE = '''
-<head><META http-equiv="refresh" content="5;"></head>
-<body>
-This page will automatically reload, and the results will be available here.
-<p>
-If you get a blank page, hit Reload on your browser.
-Results for large datasets can take up to 20 minutes to be returned ...
-</body>
-'''
+# this sets up jinja2 to load templates from the 'templates' directory
+templates_dir = blastkit_config._basedir('templates')
+loader = jinja2.FileSystemLoader(templates_dir)
+env = jinja2.Environment(loader=loader)
+
+PLACEHOLDER_MESSAGE = env.get_template('waiting-for-blast.html').render()
 
 ###
 
@@ -110,11 +108,18 @@ def worker_fn(tempdir, dbinfo, program='auto', cutoff=1e-3):
     print 'using DB:', dbfile
 
     orig_program = program
-    data = open(newfile).readlines()[1:]
-    data = "".join(data)
-    data = data.strip().lower()
-    dna = data.count('a') + data.count('t') + data.count('g') + data.count('c')
-    if dna / float(len(data)) > 0.75:
+
+    query_data = list(screed.open(newfile))
+    assert len(query_data) == 1
+    query_data = query_data[0]
+    query_seq = query_data.sequence
+    query_name = query_data.name
+    query_descr = query_data.description
+    query_len = len(query_seq)
+
+    query_seq = query_seq.lower()
+    dna = query_seq.count('a') + query_seq.count('t') + query_seq.count('g') + query_seq.count('c')
+    if dna / float(query_len) > 0.75:
         query_type = 'dna'
     else:
         query_type = 'protein'
@@ -154,32 +159,17 @@ def worker_fn(tempdir, dbinfo, program='auto', cutoff=1e-3):
     cPickle.dump(results, fp)
     fp.close()
 
-    fp = open(tempdir + '/index.html', 'w')
-    fp.write('BLAST complete. <p>')
-    fp.write('See <a href="blast-out.txt">blast output.</a>')
-    fp.write('<p>')
-    fp.write('Here is a brief list of the matches together with the matched DNA sequences.<p>')
-
-    ###
-
+    # some utility vars/functions for the template to use --
     db = screed.ScreedDB(dbfile)
 
-    for query in results:
-        for subject in query:
-            for hit in subject:
-                record = db[subject.subject_name]
-                seq = record.sequence
+    def get_record(subject_match):
+        return db[subject_match.subject_name]
 
-                fp.write('match: %s (%s) -- <b>%s</b>' % \
-                         (subject.subject_name, hit.expect,
-                          record.description,))
-                fp.write('<br>')
+    total_matches = len(results[0])
 
-                fp.write('sequence: %s' % (seq,))
-                fp.write('<p>')
-
-    ###
-
+    fp = open(tempdir + '/index.html', 'w')
+    template = env.get_template('blast_render.html')
+    fp.write(template.render(locals()))
     fp.close()
 
 ###
@@ -193,4 +183,3 @@ except:                                 # catch errors & write them out
     print '<pre>'
     print traceback.format_exc()
     print '</pre>'
-

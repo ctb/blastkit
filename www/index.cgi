@@ -1,4 +1,4 @@
-#! /home/t/blastkit/bk.lamprey/env/bin/python
+#! /home/t/blastkit/bk.dev/env/bin/python
 import cgitb
 cgitb.enable()
 
@@ -10,6 +10,12 @@ except ImportError:
     print 'Content-type: text/html\n\n<pre>Cannot import blastkit_config</pre>'
     sys.exit(-1)
 
+# this sets up jinja2 to load templates from the 'templates' directory
+import jinja2
+templates_dir = blastkit_config._basedir('templates')
+loader = jinja2.FileSystemLoader(templates_dir)
+env = jinja2.Environment(loader=loader)
+
 print 'Content-type: text/html\n\n'
 
 dblist = []
@@ -19,31 +25,4 @@ for db in blastkit_config.databases:
 
 html = "Database: <select name='db'>%s</select>" % "\n".join(dblist)
 
-print '''\
-<h1>BLAST</h1>
-
-<p>
-
-<form method='POST' action='submit.cgi'>
-Sequence name: <input type='text' name='name' value='query'><p>
-Sequence:<br>
-<textarea name='sequence' rows='30' cols='60'></textarea>
-<p>
-%(databases)s
-<p>
-<input type='submit' value='Run BLAST'>
-<p>
-<h2>More parameters:</h2>
-<p>
-Program: <select name='program'>
-<option value='auto'>(auto)</option>
-<option value='blastn>BLASTN (DNA x DNA)</option>
-<option value='blastp'>BLASTP (protein x protein)</option>
-<option value='blastx'>BLASTX (DNA x protein)</option>
-<option value='tblastn'>TBLASTN (protein x DNA)</option>
-<option value='tblastx'>TBLASTX (translated DNA x translated DNA)</option>
-</select>
-<p>
-E-value cutoff: <input type='text' name='cutoff' value='1e-3'>
-</form>
-''' % dict(databases=html)
+print env.get_template('index.html').render(dict(databases=html))

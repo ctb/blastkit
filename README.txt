@@ -17,3 +17,6 @@ Configuration:
  - point 'blastkit.tempdir' at a directory with a+rwxt permissions.
 
  - link 'blastkit.tempdir' in as 'www/files'.
+
+xx Install screed
+xx Install Jinja

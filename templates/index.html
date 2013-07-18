@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>BLAST</h2>
+
+<p>
+
+<form method='POST' action='submit.cgi'>
+Sequence name: <input type='text' name='name' value='query'><p>
+Sequence:<br>
+<textarea name='sequence' rows='20' cols='60'></textarea>
+<p>
+{{ databases }}
+<p>
+<input type='submit' value='Run BLAST'>
+<p>
+<h2>More parameters:</h2>
+<p>
+Program: <select name='program'>
+<option value='auto'>(auto)</option>
+<option value='blastn>BLASTN (DNA x DNA)</option>
+<option value='blastp'>BLASTP (protein x protein)</option>
+<option value='blastx'>BLASTX (DNA x protein)</option>
+<option value='tblastn'>TBLASTN (protein x DNA)</option>
+<option value='tblastx'>TBLASTX (translated DNA x translated DNA)</option>
+</select>
+<p>
+E-value cutoff: <input type='text' name='cutoff' value='1e-3'>
+</form>
+
+{% endblock %}

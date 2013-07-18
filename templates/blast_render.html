@@ -1,0 +1,45 @@
+{% extends "base_result.html" %}
+
+{% block content %}
+
+<h2>Summary:</h2>
+
+Query sequence '<a href='query.fa'>{{ query_name }}</a>' ({{ query_len }} char of {{ query_type }}).
+
+<p>
+
+Searched database '{{ dbinfo.id }}' ({{ dbinfo.name }}, {{ dbinfo.seqtype }}) using {{ program }} with e-value cutoff={{ cutoff }}.
+
+<p>
+
+{{ total_matches }} matches total.
+
+<p>
+
+See <a href="blast-out.txt">the raw blast output.</a>
+
+<p>
+
+<h2>Results</h2>
+
+<p>
+Here is a list of the matches, together with the matched DNA sequences.
+
+<p>
+
+{% for query in results %}
+   {% for subject in query %}
+       {% set match_n = loop.index %}
+       {% for hit in subject %}
+
+        #{{ match_n }}. {{ subject.subject_name }} ({{ hit.expect }})
+        -- <b>{{ get_record(subject).description }}</b>
+        <p>
+	<a href='../../download-sequence.cgi?seqname={{ subject.subject_name }}&db={{ dbinfo.id }}'>download match sequence</a>
+	<hr>
+
+       {% endfor %}
+   {% endfor %}
+{% endfor %}
+
+{% endblock %}
