@@ -10,7 +10,7 @@ import _mypath
 import blastkit
 import blastkit_config
 import blastparser
-from pygr import seqdb
+import screed
 
 import cgi
 
@@ -159,19 +159,18 @@ def worker_fn(tempdir, dbinfo, program='auto', cutoff=1e-3):
 
     ###
 
-    db = seqdb.SequenceFileDB(dbfile)
+    db = screed.ScreedDB(dbfile)
 
     for query in results:
         for subject in query:
             for hit in subject:
-                fp.write('Query: %s; subject: %s; hit, e_val: %s' % \
-                         (query.query_name,
-                          subject.subject_name,
-                          hit.expect))
-                fp.write('<br>')
+                record = db[subject.subject_name]
+                seq = record.sequence
 
-                seq = db[subject.subject_name]
-                seq = str(seq)
+                fp.write('match: %s (%s) -- <b>%s</b>' % \
+                         (subject.subject_name, hit.expect,
+                          record.description,))
+                fp.write('<br>')
 
                 fp.write('sequence: %s' % (seq,))
                 fp.write('<p>')

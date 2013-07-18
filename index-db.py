@@ -1,18 +1,13 @@
 #! /usr/bin/env python
 import sys
-import pygr.seqdb
 import os
+import screed
 
 filename = sys.argv[1]
 
 try:
-    os.unlink(filename + '.pureseq')
+    os.unlink(filename + '_screed'
 except OSError:
     pass
 
-try:
-    os.unlink(filename + '.seqlen')
-except OSError:
-    pass
-    
-pygr.seqdb.BlastDB(filename)
+screed.read_fasta_sequences(filename)
