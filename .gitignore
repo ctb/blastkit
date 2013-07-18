@@ -12,5 +12,4 @@
 *.psd
 *.psi
 *.psq
-*.seqlen
-*.pureseq
+*_screed
