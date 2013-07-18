@@ -19,11 +19,11 @@ Installation:
 
  - make a new virtualenv:
 
-      python -m virtualenv env
+       python -m virtualenv env
 
  - activate virtualenv and install screed and jinja2
 
-      . env/bin/activate
+       . env/bin/activate
        pip install git+https://github.com/ged-lab/screed.git
        pip install jinja2
 
