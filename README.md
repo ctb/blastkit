@@ -3,6 +3,9 @@ An intentionally very simple and somewhat programmable BLAST Web server.
 C. Titus Brown
 ctb@msu.edu
 
+Copyright: 2013, Michigan State University.
+License: BSD
+
 ----
 
 Requirements:
