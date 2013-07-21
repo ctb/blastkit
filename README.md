@@ -42,3 +42,7 @@ Configure:
 
          mkdir www/files
          chmod a+rwxt www/files
+
+ - configure blastall location
+
+ - check databases for indexing.
