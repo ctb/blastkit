@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}
+Search sequence names and descriptions -- blastkit
+{% endblock %}
+
+{% block content %}
+<h2>Search</h2>
+
+<p>
+
+<form method='POST' action='search.cgi'>
+Query: <input type='text' name='query' value='{{ query }}'><p>
+<p>
+{{ databases }}
+<p>
+<input type='submit' value='Search!'>
+</form>
+
+{% if results %}
+   <h2>Search results</h2>
+   {% for r in results %}
+       #{{ loop.index}}. {{ r.name }} - {{ r.description }}<p>
+<a href='./download-sequence.cgi?seqname={{ r.name }}&db={{ dbinfo.id }}'>download sequence</a>
+       <hr>
+   {% endfor %}
+{% else %}
+   {% if query %}
+      <b>No results.</b>
+   {% endif %}
+{% endif %}
+
+{% endblock %}
