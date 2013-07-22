@@ -17,6 +17,14 @@ Query: <input type='text' name='query' value='{{ query }}'><p>
 <input type='submit' value='Search!'>
 </form>
 
+{% if index_dne and query %}
+<h2>Error!</h2>
+
+No search index exists for this database ("{{ dbinfo.name }}").  Talk to someone
+about that.
+<p>
+{% endif %}
+
 {% if results %}
    <h2>Search results</h2>
    {% for r in results %}
@@ -26,7 +34,7 @@ Query: <input type='text' name='query' value='{{ query }}'><p>
    {% endfor %}
 {% else %}
    {% if query %}
-      <b>No results.</b>
+      <b>Searched for "{{ query }}". No results.</b>
    {% endif %}
 {% endif %}
 

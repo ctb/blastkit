@@ -2,7 +2,7 @@
 import cgitb
 cgitb.enable()
 
-import sys
+import sys, os
 import _mypath
 try:
     import blastkit_config
@@ -57,9 +57,13 @@ html = "Database: <select name='db'>%s</select>" % "\n".join(dblist)
 ###
 
 results = []
+indexdir = dbfile + '.whooshd'
 
-if query:
-    indexdir = dbfile + '.whooshd'
+index_dne = True
+if os.path.isdir(indexdir):
+    index_dne = False
+
+if query and not index_dne:
     ix = whoosh.index.open_dir(indexdir, readonly=True)
 
     seqdb = screed.ScreedDB(dbfile)
@@ -67,7 +71,7 @@ if query:
     with ix.searcher() as searcher:
         q = MultifieldParser(["name", "description"],
                                   ix.schema).parse(query)
-        res = searcher.search(q)
+        res = searcher.search(q, limit=100)
 
         for r in res:
             key = r['name']
@@ -80,4 +84,5 @@ print 'Content-type: text/html\n'
 print env.get_template('search.html').render(dict(databases=html,
                                                   query=query,
                                                   results=results,
-                                                  dbinfo=dbinfo))
+                                                  dbinfo=dbinfo,
+                                                  index_dne=index_dne))
