@@ -27,6 +27,8 @@ about that.
 
 {% if results %}
    <h2>Search results</h2>
+   (Showing up to 100.)
+   <p>
    {% for r in results %}
        #{{ loop.index}}. {{ r.name }} - {{ r.description }}<p>
 <a href='./download-sequence.cgi?seqname={{ r.name }}&db={{ dbinfo.id }}'>download sequence</a>
