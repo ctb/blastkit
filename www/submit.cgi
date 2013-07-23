@@ -197,7 +197,7 @@ def worker_fn(tempdir, dbinfo, program='auto', cutoff=1e-3):
 
     image.add_track(annots, db)
 
-    image.save(db['query'])
+    image.save(db[query_name])
 
 ###
 
