@@ -190,8 +190,8 @@ def worker_fn(tempdir, dbinfo, program='auto', cutoff=1e-3):
     record = results[0]
     for hits in record:
         for match in hits:
-            start = min(match.subject_start, match.subject_end)
-            end = max(match.subject_start, match.subject_end)
+            start = min(match.query_start, match.query_end)
+            end = max(match.query_start, match.query_end)
             annots.append(Annotation(hits.subject_name, record.query_name,
                                      start, end, color=colors.blue))
 
