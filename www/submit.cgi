@@ -109,6 +109,7 @@ def worker_fn(tempdir, dbinfo, program='auto', cutoff=1e-3):
 
     orig_program = program
 
+    import screed
     query_data = list(screed.open(newfile))
     assert len(query_data) == 1
     query_data = query_data[0]
@@ -171,6 +172,32 @@ def worker_fn(tempdir, dbinfo, program='auto', cutoff=1e-3):
     template = env.get_template('blast_render.html')
     fp.write(template.render(locals()))
     fp.close()
+
+    ###
+
+    import screed
+    import screed.pygr_api
+    import pygr_draw
+    from pygr_draw import Annotation
+
+    screed.read_fasta_sequences(tempdir + '/query.fa')
+    db = screed.pygr_api.ScreedSequenceDB(tempdir + '/query.fa')
+
+    image = pygr_draw.Draw(tempdir + '/image.png')
+    colors = image.colors
+
+    annots = []
+    record = results[0]
+    for hits in record:
+        for match in hits:
+            start = min(match.subject_start, match.subject_end)
+            end = max(match.subject_start, match.subject_end)
+            annots.append(Annotation(hits.subject_name, record.query_name,
+                                     start, end, color=colors.blue))
+
+    image.add_track(annots, db)
+
+    image.save(db['query'])
 
 ###
 
