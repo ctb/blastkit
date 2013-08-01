@@ -24,7 +24,11 @@ def check_shebangs():
 
 def check_www_mypath():
     sys.path.insert(0, cgipath)
-    import _mypath
+    try:
+        import _mypath
+    except ImportError:
+        print 'ERROR: edit _mypath.py and fix "dir" location'
+        return False
 
     a = os.path.abspath(_mypath.dir)
     b = os.path.abspath(libpath)
