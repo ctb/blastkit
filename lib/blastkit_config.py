@@ -1,11 +1,11 @@
 import blastkit
 import os.path
 
-BASEDIR='/home/t/blastkit/bk.dev/'
+BASEDIR='/root/blastkit/'
 def _basedir(x):
     return os.path.join(BASEDIR, x)
 
-blastkit.BLAST = '/usr/bin/blastall'
+blastkit.BLAST = '/usr/local/bin/blastall'
 blastkit.tempdir = BASEDIR + 'www/files'
 blastkit.dbs = BASEDIR + 'db/'
 

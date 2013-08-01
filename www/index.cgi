@@ -1,4 +1,4 @@
-#! /home/t/blastkit/env/bin/python
+#! /usr/bin/python
 import cgitb
 cgitb.enable()
 
