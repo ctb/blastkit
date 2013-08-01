@@ -10,6 +10,9 @@ blastkit.tempdir = BASEDIR + 'www/files'
 blastkit.dbs = BASEDIR + 'db/'
 
 databases = [
+    dict(id='db', filename=blastkit.dbs + 'db.fa',
+         name='Your database',
+         seqtype='DNA'),
     dict(id='test-dna', filename=blastkit.dbs + 'test-dna.fa',
          name='Test database',
          seqtype='DNA'),
