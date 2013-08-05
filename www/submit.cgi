@@ -166,7 +166,9 @@ def worker_fn(tempdir, dbinfo, program='auto', cutoff=1e-3):
     def get_record(subject_match):
         return db[subject_match.subject_name]
 
-    total_matches = len(results[0])
+    total_matches = 0
+    if len(results):
+       total_matches = len(results[0])
 
     fp = open(tempdir + '/index.html', 'w')
     template = env.get_template('blast_render.html')
