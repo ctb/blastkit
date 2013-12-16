@@ -11,8 +11,11 @@ blastkit.dbs = BASEDIR + 'db/'
 
 databases = [
     dict(id='db', filename=blastkit.dbs + 'db.fa',
-         name='Your database',
+         name='Your DNA database',
          seqtype='DNA'),
+    dict(id='dbprot', filename=blastkit.dbs + 'db-prot.fa',
+         name='Your protein database',
+         seqtype='protein'),
     dict(id='test-dna', filename=blastkit.dbs + 'test-dna.fa',
          name='Test database',
          seqtype='DNA'),
