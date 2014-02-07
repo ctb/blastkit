@@ -166,7 +166,10 @@ def worker_fn(tempdir, dbinfo, program='auto', cutoff=1e-3):
     def get_record(subject_match):
         return db[subject_match.subject_name]
 
-    total_matches = len(results[0])
+    try:
+        total_matches = len(results[0])
+    except IndexError:
+        total_matches = 0
 
     fp = open(tempdir + '/index.html', 'w')
     template = env.get_template('blast_render.html')
@@ -186,18 +189,19 @@ def worker_fn(tempdir, dbinfo, program='auto', cutoff=1e-3):
     image = pygr_draw.Draw(tempdir + '/image.png')
     colors = image.colors
 
-    annots = []
-    record = results[0]
-    for hits in record:
-        for match in hits:
-            start = min(match.query_start, match.query_end)
-            end = max(match.query_start, match.query_end)
-            annots.append(Annotation(hits.subject_name, record.query_name,
-                                     start, end, color=colors.blue))
+    if total_matches:
+        annots = []
+        record = results[0]
+        for hits in record:
+            for match in hits:
+                start = min(match.query_start, match.query_end)
+                end = max(match.query_start, match.query_end)
+                annots.append(Annotation(hits.subject_name, record.query_name,
+                                         start, end, color=colors.blue))
 
-    image.add_track(annots, db)
+        image.add_track(annots, db)
 
-    image.save(db[query_name])
+        image.save(db[query_name])
 
 ###
 
