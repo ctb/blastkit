@@ -1,7 +1,7 @@
 import blastkit
 import os.path
 
-BASEDIR='/root/blastkit/'
+BASEDIR='/home/ubuntu/blastkit/'
 def _basedir(x):
     return os.path.join(BASEDIR, x)
 
